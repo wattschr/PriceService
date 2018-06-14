@@ -99,7 +99,11 @@ class PricingServerTest {
 		final ResponseEntity<Void> failedUploadBatch =
 				priceServerConnection.uploadBatch(batchId, Collections.singletonList(price(12131232L)));
 
-		assertEquals(HttpStatus.GONE, failedUploadBatch.getStatusCode());
+		assertEquals(HttpStatus.NOT_FOUND, failedUploadBatch.getStatusCode());
+
+		final ResponseEntity<Void> tryToCommitBatch = priceServerConnection.tryToCommitBatch(batchId);
+
+		assertEquals(HttpStatus.NOT_FOUND, tryToCommitBatch.getStatusCode());
 	}
 
 	@Test

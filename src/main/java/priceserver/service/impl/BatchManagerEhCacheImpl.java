@@ -85,7 +85,12 @@ public class BatchManagerEhCacheImpl implements BatchManager {
 
 	public Collection<Price> closeBatch(long batchId) {
 		final Batch batch = safeGetBatch(batchId);
-		return batch.closeAndGetPrices();
+		final Collection<Price> prices = batch.closeAndGetPrices();
+		//The above call ensures that the batch is closed and can no longer be modified
+		//So we can remove it now with out fear of other threads being involved
+		//Does not matter if remove is called multiple times.
+		ongoingBatches.remove(batchId);
+		return prices;
 	}
 
 

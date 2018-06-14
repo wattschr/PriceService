@@ -32,15 +32,18 @@ class PriceServerConnection {
 	}
 
 	void commitBatch(Long batchId) {
-		final ResponseEntity<Void> commitResponse =
-				template.exchange(urlLocalPricingservice + "batches/" + batchId + "/commit",
-				                  HttpMethod.POST,
-				                  null,
-				                  Void.class
-				                 );
+		final ResponseEntity<Void> commitResponse = tryToCommitBatch(batchId);
 		if (commitResponse.getStatusCode() != HttpStatus.OK) {
 			throw new IllegalStateException("Commit failed " + commitResponse);
 		}
+	}
+
+	ResponseEntity<Void> tryToCommitBatch(Long batchId) {
+		return template.exchange(urlLocalPricingservice + "batches/" + batchId + "/commit",
+		                         HttpMethod.POST,
+		                         null,
+		                         Void.class
+		                 );
 	}
 
 	ResponseEntity<Long> createBatch() {
